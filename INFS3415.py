@@ -206,7 +206,7 @@ if not st.session_state.logged_in:
             pw_ok = bool(re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{2,12}$", password))
 
             if not id_ok:
-                st.warning("Employee ID must be up to 20 letters + 4 digits (e.g., Malik1042).")
+                st.warning("Employee ID must contain one letter and 6 digits (e.g., M124556).")
             elif role is None:
                 st.warning("Please select an official Role before logging in.")
             elif not pw_ok:
