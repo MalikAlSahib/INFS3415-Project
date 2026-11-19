@@ -67,6 +67,17 @@ div[data-testid="stFormSubmitButton"] button[data-testid="stBaseButton-secondary
     background-color: #16325C !important;
     color: #FFFFFF !important;
     border-color: #16325C !important;
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+    background-color: #FFFFFF !important;
+    color: #0A192F !important;
+    color-scheme: light !important;
+}
+
+input, textarea, select, [data-baseweb="select"] > div {
+    background-color: #FFFFFF !important;
+    color: #0A192F !important;
+    -webkit-text-fill-color: #0A192F !important;
+}
 }
 </style>
 """
