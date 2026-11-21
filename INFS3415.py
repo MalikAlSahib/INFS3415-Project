@@ -177,6 +177,7 @@ if not st.session_state.logged_in:
         st.markdown("### Authorized Personnel Authentication")
         username = st.text_input(
             "Employee ID",
+            placeholder="(e.g. E123456)",
             value="",
             max_chars=7,
         )
