@@ -193,7 +193,7 @@ if not st.session_state.logged_in:
         )
         password = st.text_input(
             "Password",
-            placeholder="(e.g. Pass12345678)"
+            placeholder="(e.g. Pass12345678)",
             type="password",
             value="",
             max_chars=12
