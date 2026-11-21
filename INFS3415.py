@@ -1,8 +1,11 @@
 import streamlit as st
 import hashlib
 import datetime
+from zoneinfo import ZoneInfo
 import pandas as pd
 import re
+
+OMAN_TZ = ZoneInfo("Asia/Muscat")
 
 st.set_page_config(
     page_title="Port of Duqm — Official Cyber Security Portal",
@@ -67,17 +70,6 @@ div[data-testid="stFormSubmitButton"] button[data-testid="stBaseButton-secondary
     background-color: #16325C !important;
     color: #FFFFFF !important;
     border-color: #16325C !important;
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
-    background-color: #FFFFFF !important;
-    color: #0A192F !important;
-    color-scheme: light !important;
-}
-
-input, textarea, select, [data-baseweb="select"] > div {
-    background-color: #FFFFFF !important;
-    color: #0A192F !important;
-    -webkit-text-fill-color: #0A192F !important;
-}
 }
 </style>
 """
@@ -128,7 +120,8 @@ if "documents" not in st.session_state:
 if "audit_logs" not in st.session_state:
     st.session_state.audit_logs = [
         {
-            "Timestamp": "2026-11-19 08:30:12",
+            "Event #": 1,
+            "Timestamp": datetime.datetime.now(OMAN_TZ).strftime("%Y-%m-%d %H:%M:%S"),
             "User": "System",
             "Role": "Admin",
             "Action": "System Initialized & SHA-256 Ledger Active",
@@ -137,10 +130,15 @@ if "audit_logs" not in st.session_state:
     ]
 
 def add_log(user, role, action, level="Normal"):
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    st.session_state.audit_logs.insert(
-        0,
+    now = datetime.datetime.now(OMAN_TZ).strftime("%Y-%m-%d %H:%M:%S")
+    next_event_num = (
+        max(entry.get("Event #", 0) for entry in st.session_state.audit_logs) + 1
+        if st.session_state.audit_logs
+        else 1
+    )
+    st.session_state.audit_logs.append(
         {
+            "Event #": next_event_num,
             "Timestamp": now,
             "User": user,
             "Role": role,
@@ -177,7 +175,7 @@ if not st.session_state.logged_in:
         st.markdown("### Authorized Personnel Authentication")
         username = st.text_input(
             "Employee ID",
-            placeholder="(e.g. E123456)",
+            placeholder="e.g. E123456",
             value="",
             max_chars=7,
         )
@@ -193,7 +191,7 @@ if not st.session_state.logged_in:
         )
         password = st.text_input(
             "Password",
-            placeholder="(e.g. Pass12345678)",
+            placeholder="e.g. Pass12345678",
             type="password",
             value="",
             max_chars=12
@@ -208,7 +206,7 @@ if not st.session_state.logged_in:
             pw_ok = bool(re.match(r"^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{2,12}$", password))
 
             if not id_ok:
-                st.warning("Employee ID must contain one letter and 6 digits (e.g., M124556).")
+                st.warning("Employee ID must be only one letter + 6 digits (e.g., E123456).")
             elif role is None:
                 st.warning("Please select an official Role before logging in.")
             elif not pw_ok:
@@ -382,4 +380,6 @@ elif "Port Cyber Security Officer" in active_role:
 
     st.markdown("#### Immutable Audit Log Ledger")
     df_logs = pd.DataFrame(st.session_state.audit_logs)
+    if not df_logs.empty:
+        df_logs = df_logs.set_index("Event #")
     st.dataframe(df_logs, use_container_width=True)
