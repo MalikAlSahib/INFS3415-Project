@@ -176,7 +176,7 @@ if not st.session_state.logged_in:
     with col1:
         st.markdown("### Authorized Personnel Authentication")
         username = st.text_input(
-            "Employee ID", "(e.g. E123456)",
+            "Employee ID",
             value="",
             max_chars=7,
         )
